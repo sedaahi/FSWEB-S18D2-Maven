@@ -29,25 +29,83 @@ Yazdığınız sorguları buradan test edebilirsiniz: [https://ergineer.com/asse
 * Öncelikle aşağıdaki sorguların tümünü yazdıktan sonra veritabanınızda çalıştırınız. Projenin içerisine yazdığınız sorguları eklemenize gerek yoktur.
 * Uygulamadaki testler yazdığınız sorguların tümünün veritabanında çalıştırıldığını varsayarak test edeceklerdir. Bu yüzden aşağıdaki 10 sorgu için yazdığınız queryleri mutlaka veritabanında çalıştırdıktan sonra test kısmına geliniz.
 
-      1) Biyografi türünü tür tablosuna ekleyiniz.
-	
-      2) Nurettin Belek isimli yazarı yazar tablosuna ekleyiniz.
-	
-      3) 10B sınıfındaki öğrencileri 10C sınıfına geçirin.
-	
-      4) Tüm kitapların puanını 5 puan arttırınız.
-	
-      5) Adı Mehmet olan tüm yazarları silin.
-	
-      6) Kişisel Gelişim isimli bir tür oluşturun.
-	
-      7) 'Benim Üniversitelerim' isimli kitabın türünü 'Kişisel Gelişim' yapın.
-	
-      8) Öğrenci tablosunu kontrol etmek amaçlı tüm öğrencileri görüntüleyen "ogrencilistesi" adında bir fonksiyon oluşturun.
+# SQL DML Procedures
 
-      9) kitap tablosuna yeni kitap eklemek için "ekle" adında bir prosedür oluşturun.
-	
-      10) Öğrenci noya göre öğrenci silebilmeyi sağlayan "sil" adında bir prosedür oluşturun.
+Bu proje PostgreSQL üzerinde SQL DML, Function ve Procedure konularını içeren alıştırmaları kapsamaktadır.
+
+## Görevler ve Çözümler
+
+### 1. Biyografi türünü ekleyin
+
+```sql
+INSERT INTO tur (ad)
+VALUES ('Biyografi');
+```
+
+---
+
+### 2. Nurettin Belek isimli yazarı ekleyin
+
+```sql
+INSERT INTO yazar (ad, soyad)
+VALUES ('Nurettin', 'Belek');
+```
+
+---
+
+### 3. 10B sınıfındaki öğrencileri 10C sınıfına geçirin
+
+```sql
+UPDATE ogrenci
+SET sinif = '10C'
+WHERE sinif = '10B';
+```
+
+...
+
+### 8. ogrencilistesi fonksiyonu
+
+```sql
+CREATE OR REPLACE FUNCTION ogrencilistesi()
+RETURNS SETOF ogrenci
+LANGUAGE sql
+AS $BODY$
+    SELECT * FROM ogrenci;
+$BODY$;
+```
+
+### 9. ekle prosedürü
+
+```sql
+CREATE OR REPLACE PROCEDURE public.ekle(
+    p_ad VARCHAR,
+    p_puan INTEGER,
+    p_yazarno BIGINT,
+    p_turno BIGINT
+)
+LANGUAGE plpgsql
+AS $BODY$
+BEGIN
+    INSERT INTO kitap(ad, puan, yazarno, turno)
+    VALUES (p_ad, p_puan, p_yazarno, p_turno);
+END;
+$BODY$;
+```
+
+### 10. sil prosedürü
+
+```sql
+CREATE OR REPLACE PROCEDURE public.sil(
+    p_ogrno BIGINT
+)
+LANGUAGE plpgsql
+AS $BODY$
+BEGIN
+    DELETE FROM ogrenci
+    WHERE ogrno = p_ogrno;
+END;
+$BODY$;
+```
 
 
 ### ⚠️ Skorun NextGen'e Kaydedilmediyse
